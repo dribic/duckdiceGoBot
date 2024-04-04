@@ -1,0 +1,5 @@
+## List of ignored files
+# API File
+API
+# Executable
+*.exe
