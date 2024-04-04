@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -14,7 +13,7 @@ import (
 	"time"
 
 	cloudflarebp "github.com/DaRealFreak/cloudflare-bp-go"
-}
+)
 
 func main() {
 	apiFile, err := os.Open("API")
