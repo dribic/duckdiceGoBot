@@ -27,6 +27,7 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"os"
+	"strconv"
 	"time"
 
 	cloudflarebp "github.com/DaRealFreak/cloudflare-bp-go"
@@ -117,6 +118,9 @@ func main() {
 		log.Fatal(err)
 	}
 
+	//test stuff
+	var curr, balance string
+
 	fmt.Println("Username:", userInfo.Username)
 	fmt.Println("Balances:")
 	fmt.Println("-------------------------------")
@@ -126,32 +130,20 @@ func main() {
 		} else {
 			fmt.Println(balans.Main, " ", balans.Currency)
 		}
+		//test stuff
+		if balans.Currency == "USDT" {
+			curr = balans.Currency
+			balance = balans.Faucet
+		}
 	}
 	fmt.Println("-------------------------------")
 
-	var bet float64
-	var currency string
-	var faucetMode string = "faucet"
-	fMode := true
+	var baseBet float64
 	fmt.Print("Insert bet value: ")
-	fmt.Scan(&bet)
-	amount := fmt.Sprintf("%f", bet)
-	fmt.Println("Bet is", amount)
+	fmt.Scan(&baseBet)
 
-	fmt.Print("Choose currency: ")
-	fmt.Scan(&currency)
-
-	fmt.Print("Choose mode: ")
-	fmt.Scan(&faucetMode)
-
-	if faucetMode == "Main" || faucetMode == "main" || faucetMode == "M" || faucetMode == "m" {
-		fMode = false
-	}
-
-	rez := PlaceABet(apiKey, amount, "44", currency, fMode, false)
-	if rez == true {
-		fmt.Println("Bet successful.✅")
-	} else {
-		fmt.Println("Bet unsuccessful.☯")
-	}
+	//test stuff
+	fmt.Println(balance, curr)
+	balD, _ := strconv.ParseFloat(balance, 64)
+	fmt.Printf("Balance is %.6f %s. balD var type is %T!", balD, curr, balD)
 }
