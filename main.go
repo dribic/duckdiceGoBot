@@ -1,3 +1,20 @@
+/*
+ Copyright (C) 2024 Dejan Ribič
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 package main
 
 import (
@@ -111,12 +128,25 @@ func main() {
 	}
 
 	var bet float64
+	var currency string
+	var faucetMode string = "faucet"
+	fMode := true
 	fmt.Print("Insert bet value: ")
 	fmt.Scan(&bet)
 	amount := fmt.Sprintf("%f", bet)
 	fmt.Println("Bet is", amount)
 
-	rez := PlaceABet(apiKey, amount, "USDT")
+	fmt.Print("Choose currency: ")
+	fmt.Scan(&currency)
+
+	fmt.Print("Choose mode: ")
+	fmt.Scan(&faucetMode)
+
+	if faucetMode == "Main" || faucetMode == "main" {
+		fMode = false
+	}
+
+	rez := PlaceABet(apiKey, amount, currency, fMode)
 	if rez == true {
 		fmt.Println("Bet successful.✅")
 	} else {
