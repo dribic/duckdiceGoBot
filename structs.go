@@ -117,11 +117,12 @@ type BetResponse struct {
 	User          User     `json:"user"`
 }
 
-// BetPayload struct to represent the JSON data
 type BetPayload struct {
-	Symbol string `json:"symbol"`
-	Chance string `json:"chance"`
-	IsHigh bool   `json:"isHigh"`
-	Amount string `json:"amount"`
-	Faucet bool   `json:"faucet"`
+	Symbol                string `json:"symbol"`
+	Chance                string `json:"chance"`
+	IsHigh                bool   `json:"isHigh"`
+	Amount                string `json:"amount"`
+	UserWageringBonusHash string `json:"userWageringBonusHash"`
+	Faucet                bool   `json:"faucet"`
+	TLEHash               string `json:"tleHash"`
 }

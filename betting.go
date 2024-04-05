@@ -31,15 +31,15 @@ import (
 	cloudflarebp "github.com/DaRealFreak/cloudflare-bp-go"
 )
 
-func PlaceABet(apiKey, betValue, currency string, mode bool) bool {
+func PlaceABet(apiKey, betValue, chance, currency string, mode, high bool) bool {
 	var result bool
 	url := "https://duckdice.io/api/play?api_key=" + apiKey
 
 	// Create a bet
-	sampleBet := BetPayload{
+	bet := BetPayload{
 		Symbol: currency,
-		Chance: "44",
-		IsHigh: false,
+		Chance: chance,
+		IsHigh: high,
 		Amount: betValue,
 		Faucet: mode,
 	}
@@ -52,7 +52,7 @@ func PlaceABet(apiKey, betValue, currency string, mode bool) bool {
 	}
 
 	// Marshal the payload into JSON
-	jsonPayload, err := json.Marshal(sampleBet)
+	jsonPayload, err := json.Marshal(bet)
 	if err != nil {
 		fmt.Println("Error marshalling JSON:", err)
 		os.Exit(1)
@@ -90,7 +90,7 @@ func PlaceABet(apiKey, betValue, currency string, mode bool) bool {
 
 	// Retrying when captcha triggered
 	for string(body)[2:9] == "DOCTYPE" {
-		waiter := rand.Uint32N(27) + 3
+		waiter := rand.Uint32N(12) + 3
 		req, err = http.NewRequest("POST", url, bytes.NewBuffer(jsonPayload))
 		if err != nil {
 			fmt.Println("Error creating request:", err)
@@ -104,7 +104,7 @@ func PlaceABet(apiKey, betValue, currency string, mode bool) bool {
 		fmt.Println("FUCKING CAPTCHA!😠😠😠")
 		fmt.Printf("Waiting %d seconds", waiter)
 
-		// Implented 10 second wait
+		// Implented up to 15 second wait
 		for range waiter {
 			time.Sleep(time.Second)
 			fmt.Print(".")
@@ -138,6 +138,7 @@ func PlaceABet(apiKey, betValue, currency string, mode bool) bool {
 	result = betResp.Bet.Result
 
 	fmt.Println("Roll is", betResp.Bet.Number)
+	fmt.Println("Payout is", betResp.Bet.WinAmount)
 
 	return result
 }

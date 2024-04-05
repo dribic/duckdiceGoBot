@@ -50,7 +50,7 @@ func main() {
 	jar, err := cookiejar.New(nil)
 	if err != nil {
 		fmt.Println("Error creating cookie jar:", err)
-		return
+		log.Fatal(err)
 	}
 
 	// Create an HTTP client that uses the CookieJar
@@ -63,7 +63,7 @@ func main() {
 	response, err := client.Get(url)
 	if err != nil {
 		fmt.Println("Error making request:", err)
-		return
+		log.Fatal(err)
 	}
 	defer response.Body.Close() // Ensure the response body is closed later
 
@@ -75,18 +75,18 @@ func main() {
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		fmt.Println("Error reading response:", err)
-		return
+		log.Fatal(err)
 	}
 
 	// Retrying when captcha triggered
 	for string(body)[2:9] == "DOCTYPE" {
-		waiter := rand.Uint32N(27) + 3
+		waiter := rand.Uint32N(12) + 3
 
 		client.Transport = cloudflarebp.AddCloudFlareByPass(client.Transport)
 		fmt.Println("FUCKING CAPTCHA!😠😠😠")
 		fmt.Printf("Waiting %d seconds", waiter)
 
-		// Implented 10 second wait
+		// Implented up to 15 second wait
 		for range waiter {
 			time.Sleep(time.Second)
 			fmt.Print(".")
@@ -98,7 +98,7 @@ func main() {
 		captchaResp, err := client.Get(url)
 		if err != nil {
 			fmt.Println("Error sending request:", err)
-			return
+			log.Fatal(err)
 		}
 		defer captchaResp.Body.Close()
 
@@ -106,7 +106,7 @@ func main() {
 		body, err = io.ReadAll(captchaResp.Body)
 		if err != nil {
 			fmt.Println("Error reading response:", err)
-			return
+			log.Fatal(err)
 		}
 	}
 
@@ -114,11 +114,12 @@ func main() {
 	err = json.Unmarshal([]byte(body), &userInfo)
 	if err != nil {
 		fmt.Println("Error parsing JSON:", err)
-		return
+		log.Fatal(err)
 	}
 
 	fmt.Println("Username:", userInfo.Username)
 	fmt.Println("Balances:")
+	fmt.Println("-------------------------------")
 	for _, balans := range userInfo.Balances {
 		if balans.Main == "" {
 			fmt.Println(balans.Faucet, " ", balans.Currency, "(Faucet)")
@@ -126,6 +127,7 @@ func main() {
 			fmt.Println(balans.Main, " ", balans.Currency)
 		}
 	}
+	fmt.Println("-------------------------------")
 
 	var bet float64
 	var currency string
@@ -142,11 +144,11 @@ func main() {
 	fmt.Print("Choose mode: ")
 	fmt.Scan(&faucetMode)
 
-	if faucetMode == "Main" || faucetMode == "main" {
+	if faucetMode == "Main" || faucetMode == "main" || faucetMode == "M" || faucetMode == "m" {
 		fMode = false
 	}
 
-	rez := PlaceABet(apiKey, amount, currency, fMode)
+	rez := PlaceABet(apiKey, amount, "44", currency, fMode, false)
 	if rez == true {
 		fmt.Println("Bet successful.✅")
 	} else {
