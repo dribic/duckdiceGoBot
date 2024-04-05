@@ -25,6 +25,7 @@ import (
 	"math/rand/v2"
 	"net/http"
 	"net/http/cookiejar"
+	"os"
 	"time"
 
 	cloudflarebp "github.com/DaRealFreak/cloudflare-bp-go"
@@ -47,21 +48,21 @@ func PlaceABet(apiKey, betValue, currency string, mode bool) bool {
 	jar, err := cookiejar.New(nil)
 	if err != nil {
 		fmt.Println("Error creating cookie jar:", err)
-		return false
+		os.Exit(1)
 	}
 
 	// Marshal the payload into JSON
 	jsonPayload, err := json.Marshal(sampleBet)
 	if err != nil {
 		fmt.Println("Error marshalling JSON:", err)
-		return false
+		os.Exit(1)
 	}
 
 	// Create a new HTTP request
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonPayload))
 	if err != nil {
 		fmt.Println("Error creating request:", err)
-		return false
+		os.Exit(1)
 	}
 
 	// Set the Content-Type header
@@ -76,7 +77,7 @@ func PlaceABet(apiKey, betValue, currency string, mode bool) bool {
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Println("Error sending request:", err)
-		return false
+		os.Exit(1)
 	}
 	defer resp.Body.Close()
 
@@ -84,7 +85,7 @@ func PlaceABet(apiKey, betValue, currency string, mode bool) bool {
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("Error reading response:", err)
-		return false
+		os.Exit(1)
 	}
 
 	// Retrying when captcha triggered
@@ -93,7 +94,7 @@ func PlaceABet(apiKey, betValue, currency string, mode bool) bool {
 		req, err = http.NewRequest("POST", url, bytes.NewBuffer(jsonPayload))
 		if err != nil {
 			fmt.Println("Error creating request:", err)
-			return false
+			os.Exit(1)
 		}
 
 		// Set the Content-Type header
@@ -115,7 +116,7 @@ func PlaceABet(apiKey, betValue, currency string, mode bool) bool {
 		captchaResp, err := client.Do(req)
 		if err != nil {
 			fmt.Println("Error sending request:", err)
-			return false
+			os.Exit(1)
 		}
 		defer captchaResp.Body.Close()
 
@@ -123,7 +124,7 @@ func PlaceABet(apiKey, betValue, currency string, mode bool) bool {
 		body, err = io.ReadAll(captchaResp.Body)
 		if err != nil {
 			fmt.Println("Error reading response:", err)
-			return false
+			os.Exit(1)
 		}
 	}
 
@@ -131,7 +132,7 @@ func PlaceABet(apiKey, betValue, currency string, mode bool) bool {
 	err = json.Unmarshal([]byte(body), &betResp)
 	if err != nil {
 		fmt.Println("Error parsing JSON:", err)
-		return false
+		os.Exit(1)
 	}
 
 	result = betResp.Bet.Result
