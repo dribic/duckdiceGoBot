@@ -22,7 +22,7 @@ import (
 	"os"
 )
 
-func Labouchere(startBet, startBalance, targetBalance float64, fMode, high bool, apiKey, curr string) {
+func Labouchere(startBet, startBalance, targetBalance float64, fMode, high bool, apiKey, curr string) float64 {
 	// Initialise the sequence table
 	seqTable := make([]float64, 10)
 	for i := range seqTable {
@@ -84,5 +84,8 @@ func Labouchere(startBet, startBalance, targetBalance float64, fMode, high bool,
 		// Print progress
 		fmt.Printf("Current balance: %.6f, Victories: %d, Loses: %d, Total gambled amount: %6f\n", currentBalance,
 			victories, loses, totalBetAmount)
+		fmt.Println("Betting sequence table:", seqTable)
 	}
+
+	return currentBalance
 }

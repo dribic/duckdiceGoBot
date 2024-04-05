@@ -139,22 +139,42 @@ func main() {
 	fmt.Println("-------------------------------")
 
 	var baseBet, targetBal float64
+	var progSteps uint8 = 1
+	var progress string = "no"
 	fmt.Print("Insert base bet value: ")
 	fmt.Scan(&baseBet)
 	fmt.Println("Max win:", baseBet*10, curr)
 
+	fmt.Print("Do you want progressive betting <yes/no>? ")
+	fmt.Scan(&progress)
+
+	if progress == "Yes" || progress == "yes" || progress == "Y" || progress == "y" {
+		fmt.Print("How many steps do you want? ")
+		fmt.Scan(&progSteps)
+	}
+
 	//test stuff
-	balD, _ := strconv.ParseFloat(balance, 64)
-	fmt.Printf("Balance is %.6f %s. balD var type is %T!\n", balD, curr, balD)
+	baseBalance, _ := strconv.ParseFloat(balance, 64)
+	fmt.Printf("Balance is %.6f %s. baseBalance var type is %T!\n", baseBalance, curr, baseBalance)
 
 	fmt.Print("Insert target balance value: ")
 	fmt.Scan(&targetBal)
-	for targetBal-balD > baseBet*10 {
+	for targetBal-baseBalance > baseBet*10 {
 		fmt.Println("Target balance too high. Look at max win above!!!")
 		fmt.Print("Insert target balance value: ")
 		fmt.Scan(&targetBal)
 	}
 	fmt.Printf("Target balance is %.6f %s.\n", targetBal, curr)
 
-	Labouchere(baseBet, balD, targetBal, true, true, apiKey, curr)
+	if progSteps == 1 {
+		temp := Labouchere(baseBet, baseBalance, targetBal, true, true, apiKey, curr)
+		fmt.Println("Final balance is", temp, curr)
+	} else {
+		temp := baseBalance
+		for i := range progSteps {
+			fmt.Printf("%d. step:\n", i+1)
+			baseBalance = Labouchere(baseBet, temp, (targetBal + baseBet*10*float64(i)), true, true, apiKey, curr)
+			temp = baseBalance
+		}
+	}
 }
