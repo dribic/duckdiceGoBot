@@ -32,7 +32,15 @@ func Labouchere(startBet, startBalance, targetBalance float64, fMode, high bool,
 	// Initialise other variables
 	currentBalance := startBalance
 	var totalBetAmount float64
+	var multiplier float64 = 1.25
 	var victories, loses uint16
+
+	// Lowering multiplier if fMode == true
+	if fMode {
+		multiplier = 1.2045
+	}
+
+	fmt.Println("Win multiplier is", multiplier)
 
 	// Main loop
 	for currentBalance < targetBalance {
@@ -62,12 +70,12 @@ func Labouchere(startBet, startBalance, targetBalance float64, fMode, high bool,
 		result := PlaceABet(apiKey, amount, "44", curr, fMode, high)
 
 		if result {
-			fmt.Println("Success!")
+			fmt.Println("Success!✅")
 			victories++
-			currentBalance += currentBet * 1.25
+			currentBalance += currentBet * multiplier
 			seqTable = seqTable[1 : len(seqTable)-1]
 		} else {
-			fmt.Println("Failure!")
+			fmt.Println("Failure!☯ ")
 			loses++
 			currentBalance -= currentBet
 			seqTable = append(seqTable, bet1+bet2)

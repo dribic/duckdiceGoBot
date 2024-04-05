@@ -81,7 +81,7 @@ func main() {
 
 	// Retrying when captcha triggered
 	for string(body)[2:9] == "DOCTYPE" {
-		waiter := rand.Uint32N(12) + 3
+		waiter := rand.Uint32N(6)
 
 		client.Transport = cloudflarebp.AddCloudFlareByPass(client.Transport)
 		fmt.Println("FUCKING CAPTCHA!😠😠😠")
@@ -138,12 +138,23 @@ func main() {
 	}
 	fmt.Println("-------------------------------")
 
-	var baseBet float64
-	fmt.Print("Insert bet value: ")
+	var baseBet, targetBal float64
+	fmt.Print("Insert base bet value: ")
 	fmt.Scan(&baseBet)
+	fmt.Println("Max win:", baseBet*10, curr)
 
 	//test stuff
-	fmt.Println(balance, curr)
 	balD, _ := strconv.ParseFloat(balance, 64)
-	fmt.Printf("Balance is %.6f %s. balD var type is %T!", balD, curr, balD)
+	fmt.Printf("Balance is %.6f %s. balD var type is %T!\n", balD, curr, balD)
+
+	fmt.Print("Insert target balance value: ")
+	fmt.Scan(&targetBal)
+	for targetBal-balD > baseBet*10 {
+		fmt.Println("Target balance too high. Look at max win above!!!")
+		fmt.Print("Insert target balance value: ")
+		fmt.Scan(&targetBal)
+	}
+	fmt.Printf("Target balance is %.6f %s.\n", targetBal, curr)
+
+	Labouchere(baseBet, balD, targetBal, true, true, apiKey, curr)
 }
