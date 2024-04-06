@@ -101,7 +101,7 @@ func PlaceABet(apiKey, betValue, chance, currency string, mode, high bool) bool 
 		req.Header.Set("Content-Type", "application/json")
 
 		client.Transport = cloudflarebp.AddCloudFlareByPass(client.Transport)
-		fmt.Println("FUCKING CAPTCHA!😠😠😠")
+		fmt.Println("CAPTCHA TRIGGERED!😠😠😠")
 		fmt.Printf("Waiting %d seconds", waiter)
 
 		// Implented up to 15 second wait

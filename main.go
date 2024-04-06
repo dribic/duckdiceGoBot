@@ -84,7 +84,7 @@ func main() {
 		waiter := rand.Uint32N(6)
 
 		client.Transport = cloudflarebp.AddCloudFlareByPass(client.Transport)
-		fmt.Println("FUCKING CAPTCHA!😠😠😠")
+		fmt.Println("CAPTCHA TRIGGERED!😠😠😠")
 		fmt.Printf("Waiting %d seconds", waiter)
 
 		// Implented up to 15 second wait
