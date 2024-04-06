@@ -125,12 +125,19 @@ func main() {
 	faucet, isHigh := true, true
 
 	fmt.Println("Username:", userInfo.Username)
+
+	fmt.Println("Wagering Bonuses:")
+	fmt.Println("-------------------------------")
+	for _, bonus := range userInfo.WageringBonuses {
+		fmt.Println("   - Name:", bonus.Name, " Status:", bonus.Status, " Hash:", bonus.Hash,
+			" Type:", bonus.Type, " Margin: ", bonus.Margin, bonus.Symbol)
+	}
+	fmt.Println("-------------------------------")
+
 	fmt.Println("Balances:")
 	fmt.Println("-------------------------------")
 	for _, balans := range userInfo.Balances {
-		if balans.Main == "" {
-			fmt.Println(balans.Faucet, " ", balans.Currency, "(Faucet)")
-		} else {
+		if balans.Main != "" {
 			fmt.Println(balans.Main, " ", balans.Currency)
 		}
 
