@@ -36,11 +36,14 @@ import (
 func main() {
 	apiFile, err := os.Open("API")
 	if err != nil {
-		log.Fatal(err)
+		apiFile, err = os.Open("API.txt")
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 	scanner := bufio.NewScanner(apiFile)
 	scanner.Scan()
-	apiKey := scanner.Text() // Replace with your actual API key
+	apiKey := scanner.Text()
 	url := "https://duckdice.io/api/bot/user-info?api_key=" + apiKey
 	err = apiFile.Close()
 	if err != nil {
@@ -81,7 +84,7 @@ func main() {
 
 	// Retrying when captcha triggered
 	for string(body)[2:9] == "DOCTYPE" {
-		waiter := rand.Uint32N(6)
+		waiter := rand.Uint32N(5) + 1
 
 		client.Transport = cloudflarebp.AddCloudFlareByPass(client.Transport)
 		fmt.Println("CAPTCHA TRIGGERED!😠😠😠")
@@ -129,6 +132,10 @@ func main() {
 			fmt.Println(balans.Faucet, " ", balans.Currency, "(Faucet)")
 		} else {
 			fmt.Println(balans.Main, " ", balans.Currency)
+		}
+
+		if balans.Faucet != "" {
+			fmt.Println(balans.Faucet, " ", balans.Currency, "(Faucet)")
 		}
 	}
 	fmt.Println("-------------------------------")

@@ -1,5 +1,6 @@
 ## List of ignored files
 # API File
 API
+API.txt
 # Executable
 *.exe
