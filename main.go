@@ -118,8 +118,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	//test stuff
-	var curr, balance string
+	var curr, balance, choice string
+	faucet, isHigh := true, true
 
 	fmt.Println("Username:", userInfo.Username)
 	fmt.Println("Balances:")
@@ -130,17 +130,17 @@ func main() {
 		} else {
 			fmt.Println(balans.Main, " ", balans.Currency)
 		}
-		//test stuff
-		if balans.Currency == "USDT" {
-			curr = balans.Currency
-			balance = balans.Faucet
-		}
 	}
 	fmt.Println("-------------------------------")
 
 	var baseBet, targetBal float64
 	var progSteps uint8 = 1
 	var progress string = "no"
+
+	fmt.Print("Which currency would you like to bet in: ")
+	fmt.Scan(&curr)
+	fmt.Println("You chose", curr, "currency.")
+
 	fmt.Print("Insert base bet value: ")
 	fmt.Scan(&baseBet)
 	fmt.Println("Max win:", baseBet*10, curr)
@@ -153,9 +153,30 @@ func main() {
 		fmt.Scan(&progSteps)
 	}
 
-	//test stuff
+	fmt.Print("Which mode would you like to bet in <faucet/main>: ")
+	fmt.Scan(&choice)
+	if choice == "Main" || choice == "main" || choice == "M" || choice == "m" {
+		faucet = false
+	}
+
+	fmt.Print("Would you like to bet <high/low>: ")
+	fmt.Scan(&choice)
+	if choice == "Low" || choice == "low" || choice == "L" || choice == "l" {
+		isHigh = false
+	}
+
+	for _, balans := range userInfo.Balances {
+		if balans.Currency == curr {
+			if faucet {
+				balance = balans.Faucet
+			} else {
+				balance = balans.Main
+			}
+		}
+	}
+
 	baseBalance, _ := strconv.ParseFloat(balance, 64)
-	fmt.Printf("Balance is %.6f %s. baseBalance var type is %T!\n", baseBalance, curr, baseBalance)
+	fmt.Printf("Balance is %.6f %s.\n", baseBalance, curr)
 
 	fmt.Print("Insert target balance value: ")
 	fmt.Scan(&targetBal)
@@ -167,13 +188,13 @@ func main() {
 	fmt.Printf("Target balance is %.6f %s.\n", targetBal, curr)
 
 	if progSteps == 1 {
-		temp := Labouchere(baseBet, baseBalance, targetBal, true, true, apiKey, curr)
+		temp := Labouchere(baseBet, baseBalance, targetBal, faucet, isHigh, apiKey, curr)
 		fmt.Println("Final balance is", temp, curr)
 	} else {
 		temp := baseBalance
 		for i := range progSteps {
 			fmt.Printf("%d. step:\n", i+1)
-			baseBalance = Labouchere(baseBet, temp, (targetBal + baseBet*10*float64(i)), true, true, apiKey, curr)
+			baseBalance = Labouchere(baseBet, temp, (targetBal + baseBet*10*float64(i)), faucet, isHigh, apiKey, curr)
 			temp = baseBalance
 		}
 	}
