@@ -121,8 +121,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	var curr, balance, choice string
-	faucet, isHigh := true, true
+	var curr, balance, choice, hash string
+	faucet, isHigh, bonusM := true, true, false
 
 	fmt.Println("Username:", userInfo.Username)
 
@@ -131,6 +131,7 @@ func main() {
 	for _, bonus := range userInfo.WageringBonuses {
 		fmt.Println("   - Name:", bonus.Name, " Status:", bonus.Status, " Hash:", bonus.Hash,
 			" Type:", bonus.Type, " Margin: ", bonus.Margin, bonus.Symbol)
+		hash = bonus.Hash
 	}
 	fmt.Println("-------------------------------")
 
@@ -167,10 +168,13 @@ func main() {
 		fmt.Scan(&progSteps)
 	}
 
-	fmt.Print("Which mode would you like to bet in <faucet/main>: ")
+	fmt.Print("Which mode would you like to bet in <faucet/main/bonus>: ")
 	fmt.Scan(&choice)
 	if choice == "Main" || choice == "main" || choice == "M" || choice == "m" {
 		faucet = false
+	} else if choice == "Bonus" || choice == "bonus" || choice == "B" || choice == "b" {
+		faucet = false
+		bonusM = true
 	}
 
 	fmt.Print("Would you like to bet <high/low>: ")
@@ -179,12 +183,17 @@ func main() {
 		isHigh = false
 	}
 
-	for _, balans := range userInfo.Balances {
-		if balans.Currency == curr {
-			if faucet {
-				balance = balans.Faucet
-			} else {
-				balance = balans.Main
+	if bonusM {
+		fmt.Print("Insert bonus balance:  ")
+		fmt.Scan(&balance)
+	} else {
+		for _, balans := range userInfo.Balances {
+			if balans.Currency == curr {
+				if faucet {
+					balance = balans.Faucet
+				} else {
+					balance = balans.Main
+				}
 			}
 		}
 	}
@@ -201,6 +210,13 @@ func main() {
 	}
 	fmt.Printf("Target balance is %.6f %s.\n", targetBal, curr)
 
+	if bonusM {
+		fmt.Println("You have chosen the bonus mode.")
+		fmt.Println("The bonus hash is", hash)
+		tempRes := PlaceABetSpec(apiKey, fmt.Sprint(baseBet), "44", curr, hash, false, true)
+		fmt.Println(tempRes)
+		os.Exit(0)
+	}
 	if progSteps == 1 {
 		temp := Labouchere(baseBet, baseBalance, targetBal, faucet, isHigh, apiKey, curr)
 		fmt.Println("Final balance is", temp, curr)
