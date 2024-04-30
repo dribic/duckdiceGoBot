@@ -36,12 +36,13 @@ func PlaceABetSpec(apiKey, betValue, chance, currency, hash string, mode, high b
 	url := "https://duckdice.io/api/play?api_key=" + apiKey
 
 	// Create a bet
-	bet := BetPayload{
+	var bet BetPayload
+	bet = BetPayload{
 		Symbol:                currency,
 		Chance:                chance,
 		IsHigh:                high,
 		Amount:                betValue,
-		Faucet:                mode,
+		Faucet:                false,
 		UserWageringBonusHash: hash,
 	}
 
