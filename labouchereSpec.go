@@ -53,6 +53,12 @@ func LabouchereSpec(startBet, startBalance, targetBalance float64, mode, high bo
 			os.Exit(0)
 		}
 
+		// Lowering the currentBet if larger than difference to targetBalance
+		for currentBet > targetBalance-currentBalance && currentBet > startBet {
+			fmt.Println("Lowering", currentBet, "by", startBet, "as a precaution.")
+			currentBet -= startBet
+		}
+
 		totalBetAmount += currentBet
 
 		// Print what the next bet is
@@ -73,7 +79,7 @@ func LabouchereSpec(startBet, startBalance, targetBalance float64, mode, high bo
 			fmt.Println("Failure!☯ ")
 			loses++
 			currentBalance -= currentBet
-			seqTable = append(seqTable, bet1+bet2)
+			seqTable = append(seqTable, currentBet)
 		}
 
 		// Print progress
