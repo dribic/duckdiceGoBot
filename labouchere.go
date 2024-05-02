@@ -34,6 +34,7 @@ func Labouchere(startBet, startBalance, targetBalance float64, fMode, high bool,
 	var totalBetAmount float64
 	var multiplier float64 = 1.25
 	var victories, loses uint16
+	safety := false
 
 	// Lowering multiplier if fMode == true
 	if fMode {
@@ -55,6 +56,7 @@ func Labouchere(startBet, startBalance, targetBalance float64, fMode, high bool,
 
 		// Lowering the currentBet if larger than difference to targetBalance
 		for currentBet > targetBalance-currentBalance && currentBet > startBet {
+			safety = true
 			fmt.Println("Lowering", currentBet, "by", startBet, "as a precaution.")
 			currentBet -= startBet
 		}
@@ -76,10 +78,28 @@ func Labouchere(startBet, startBalance, targetBalance float64, fMode, high bool,
 		result := PlaceABet(apiKey, amount, "44", curr, fMode, high)
 
 		if result {
-			fmt.Println("Success!✅")
-			victories++
-			currentBalance += currentBet * multiplier
-			seqTable = seqTable[1 : len(seqTable)-1]
+			if safety {
+				fmt.Println("Success!✅")
+				victories++
+				currentBalance += currentBet * multiplier
+				if seqTable[0] == currentBet {
+					seqTable = seqTable[1:]
+				} else {
+					var ticker float64 = 0.0
+					for ticker < currentBet {
+						ticker += startBet
+						seqTable[len(seqTable)-1] -= startBet
+						if seqTable[len(seqTable)-1] < startBet {
+							seqTable = seqTable[:len(seqTable)-1]
+						}
+					}
+				}
+			} else {
+				fmt.Println("Success!✅")
+				victories++
+				currentBalance += currentBet * multiplier
+				seqTable = seqTable[1 : len(seqTable)-1]
+			}
 		} else {
 			fmt.Println("Failure!☯ ")
 			loses++
