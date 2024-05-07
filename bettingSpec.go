@@ -26,13 +26,16 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"os"
+	"strconv"
 	"time"
 
 	cloudflarebp "github.com/DaRealFreak/cloudflare-bp-go"
 )
 
-func PlaceABetSpec(apiKey, betValue, chance, currency, hash string, mode, high bool) bool {
+func PlaceABetSpec(apiKey, betValue, chance, currency, hash string, mode, high, normal bool) (bool, float64) {
 	var result bool
+	var bonusBalance float64
+	var betResp BetResponse
 	url := "https://duckdice.io/api/play?api_key=" + apiKey
 
 	// Create a bet
@@ -59,9 +62,6 @@ func PlaceABetSpec(apiKey, betValue, chance, currency, hash string, mode, high b
 		fmt.Println("Error marshalling JSON:", err)
 		os.Exit(1)
 	}
-
-	//testing only
-	fmt.Println(string(jsonPayload))
 
 	// Create a new HTTP request
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonPayload))
@@ -133,17 +133,19 @@ func PlaceABetSpec(apiKey, betValue, chance, currency, hash string, mode, high b
 		}
 	}
 
-	var betResp BetResponse
 	err = json.Unmarshal([]byte(body), &betResp)
 	if err != nil {
 		fmt.Println("Error parsing JSON:", err)
 		os.Exit(1)
 	}
 
+	bonusBalance, _ = strconv.ParseFloat(betResp.Context.ContextWagerBonus.Balance, 64)
 	result = betResp.Bet.Result
 
-	fmt.Println("Roll is", betResp.Bet.Number)
-	fmt.Println("Payout is", betResp.Bet.WinAmount)
+	if normal {
+		fmt.Println("Roll is", betResp.Bet.Number)
+		fmt.Println("Payout is", betResp.Bet.WinAmount)
+	}
 
-	return result
+	return result, bonusBalance
 }

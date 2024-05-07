@@ -118,18 +118,24 @@ func main() {
 	}
 
 	var curr, balance, choice, hash string
-	faucet, isHigh, bonusM := true, true, false
+	var bonusBalance, baseBalance float64
+	faucet, isHigh, bonusM, bonusExist := true, true, false, (len(userInfo.WageringBonuses) != 0)
 
 	fmt.Println("Username:", userInfo.Username)
+	fmt.Println("-------------------------------")
 
-	fmt.Println("Wagering Bonuses:")
-	fmt.Println("-------------------------------")
-	for _, bonus := range userInfo.WageringBonuses {
-		fmt.Println("   - Name:", bonus.Name, " Status:", bonus.Status, " Hash:", bonus.Hash,
-			" Type:", bonus.Type, " Margin: ", bonus.Margin, bonus.Symbol)
-		hash = bonus.Hash
+	if bonusExist {
+		fmt.Println("Wagering Bonuses:")
+		fmt.Println("-------------------------------")
+		for _, bonus := range userInfo.WageringBonuses {
+			fmt.Println("   - Name:", bonus.Name, " Status:", bonus.Status, " Hash:", bonus.Hash,
+				" Type:", bonus.Type, " Margin: ", bonus.Margin, bonus.Symbol)
+			hash = bonus.Hash
+			curr = bonus.Symbol
+			_, bonusBalance = PlaceABetSpec(apiKey, "0.0008", "95", curr, hash, false, true, false)
+		}
+		fmt.Println("-------------------------------")
 	}
-	fmt.Println("-------------------------------")
 
 	fmt.Println("Balances:")
 	fmt.Println("-------------------------------")
@@ -142,7 +148,13 @@ func main() {
 			fmt.Println(balans.Faucet, " ", balans.Currency, "(Faucet)")
 		}
 	}
+	if bonusExist {
+		fmt.Println(bonusBalance, " ", curr, "(Bonus)")
+	}
 	fmt.Println("-------------------------------")
+
+	// Clearing curr so that bonus currency is not automatically selected.
+	curr = ""
 
 	var baseBet, targetBal float64
 	var progSteps uint8 = 1
@@ -152,6 +164,15 @@ func main() {
 	fmt.Scan(&curr)
 	fmt.Println("You chose", curr, "currency.")
 
+	fmt.Print("Which mode would you like to bet in <faucet/main/bonus>: ")
+	fmt.Scan(&choice)
+	if choice == "Main" || choice == "main" || choice == "M" || choice == "m" || choice == "MAIN" {
+		faucet = false
+	} else if choice == "Bonus" || choice == "bonus" || choice == "B" || choice == "b" || choice == "BONUS" {
+		faucet = false
+		bonusM = true
+	}
+
 	fmt.Print("Insert base bet value: ")
 	fmt.Scan(&baseBet)
 	fmt.Println("Max win:", baseBet*10, curr)
@@ -159,30 +180,18 @@ func main() {
 	fmt.Print("Do you want progressive betting <yes/no>? ")
 	fmt.Scan(&progress)
 
-	if progress == "Yes" || progress == "yes" || progress == "Y" || progress == "y" {
+	if progress == "Yes" || progress == "yes" || progress == "Y" || progress == "y" || progress == "YES" {
 		fmt.Print("How many steps do you want? ")
 		fmt.Scan(&progSteps)
 	}
 
-	fmt.Print("Which mode would you like to bet in <faucet/main/bonus>: ")
-	fmt.Scan(&choice)
-	if choice == "Main" || choice == "main" || choice == "M" || choice == "m" {
-		faucet = false
-	} else if choice == "Bonus" || choice == "bonus" || choice == "B" || choice == "b" {
-		faucet = false
-		bonusM = true
-	}
-
 	fmt.Print("Would you like to bet <high/low>: ")
 	fmt.Scan(&choice)
-	if choice == "Low" || choice == "low" || choice == "L" || choice == "l" {
+	if choice == "Low" || choice == "low" || choice == "L" || choice == "l" || choice == "LOW" {
 		isHigh = false
 	}
 
-	if bonusM {
-		fmt.Print("Insert bonus balance:  ")
-		fmt.Scan(&balance)
-	} else {
+	if !bonusM {
 		for _, balans := range userInfo.Balances {
 			if balans.Currency == curr {
 				if faucet {
@@ -194,7 +203,11 @@ func main() {
 		}
 	}
 
-	baseBalance, _ := strconv.ParseFloat(balance, 64)
+	if bonusM {
+		baseBalance = bonusBalance
+	} else {
+		baseBalance, _ = strconv.ParseFloat(balance, 64)
+	}
 	fmt.Printf("Balance is %.6f %s.\n", baseBalance, curr)
 
 	fmt.Print("Insert target balance value: ")
@@ -207,21 +220,46 @@ func main() {
 	fmt.Printf("Target balance is %.6f %s.\n", targetBal, curr)
 
 	if bonusM {
-		fmt.Println("You have chosen the bonus mode.")
-		fmt.Println("The bonus hash is", hash)
-		tempRes := PlaceABetSpec(apiKey, fmt.Sprint(baseBet), "44", curr, hash, false, true)
-		fmt.Println(tempRes)
-		os.Exit(0)
-	}
-	if progSteps == 1 {
-		temp := Labouchere(baseBet, baseBalance, targetBal, faucet, isHigh, apiKey, curr)
-		fmt.Println("Final balance is", temp, curr)
+		if progSteps == 1 {
+			temp := LabouchereSpec(baseBet, baseBalance, targetBal, faucet, isHigh, apiKey, hash, curr)
+			fmt.Println("Final balance is", temp, curr)
+		} else {
+			temp := baseBalance
+			for i := range progSteps {
+				if i > 0 {
+					fmt.Println("-------------------------------")
+				}
+				fmt.Printf("%d. step:\n", i+1)
+				fmt.Println("-------------------------------")
+				baseBalance = LabouchereSpec(baseBet, temp, (targetBal + baseBet*10*float64(i)), faucet, isHigh, apiKey, hash, curr)
+				temp = baseBalance
+				fmt.Println("Success!✅")
+				if i == 0 {
+					fmt.Println("-------------------------------")
+				}
+			}
+			fmt.Println("Final balance is", temp, curr)
+		}
 	} else {
-		temp := baseBalance
-		for i := range progSteps {
-			fmt.Printf("%d. step:\n", i+1)
-			baseBalance = Labouchere(baseBet, temp, (targetBal + baseBet*10*float64(i)), faucet, isHigh, apiKey, curr)
-			temp = baseBalance
+		if progSteps == 1 {
+			temp := Labouchere(baseBet, baseBalance, targetBal, faucet, isHigh, apiKey, curr)
+			fmt.Println("Final balance is", temp, curr)
+		} else {
+			temp := baseBalance
+			for i := range progSteps {
+				if i > 0 {
+					fmt.Println("-------------------------------")
+				}
+				fmt.Printf("%d. step:\n", i+1)
+				fmt.Println("-------------------------------")
+				baseBalance = Labouchere(baseBet, temp, (targetBal + baseBet*10*float64(i)), faucet, isHigh, apiKey, curr)
+				temp = baseBalance
+				fmt.Println("Success!✅")
+				if i == 0 {
+					fmt.Println("-------------------------------")
+				}
+			}
+			fmt.Println("Final balance is", temp, curr)
 		}
 	}
 }

@@ -70,7 +70,7 @@ func LabouchereSpec(startBet, startBalance, targetBalance float64, mode, high bo
 		amount := fmt.Sprintf("%.6f", currentBet)
 
 		// Making a bet
-		result := PlaceABetSpec(apiKey, amount, "44", curr, hash, mode, high)
+		result, _ := PlaceABetSpec(apiKey, amount, "44", curr, hash, mode, high, true)
 
 		if result {
 			if safety {

@@ -45,6 +45,20 @@ type WageringBonus struct {
 	Margin string `json:"margin"`
 }
 
+type Context struct {
+	ContextWagerBonus ContextWagerBonus `json:"wageringBonus"`
+}
+
+type ContextWagerBonus struct {
+	Name    string `json:"name"`
+	Type    string `json:"type"`
+	Hash    string `json:"hash"`
+	Status  string `json:"status"`
+	Symbol  string `json:"symbol"`
+	Margin  string `json:"margin"`
+	Balance string `json:"balance"`
+}
+
 type TLE struct {
 	Hash   string `json:"hash"`
 	Name   string `json:"name"`
@@ -115,6 +129,7 @@ type BetResponse struct {
 	JackpotStatus *bool    `json:"jackpotStatus"`
 	Jackpot       *Jackpot `json:"jackpot"`
 	User          User     `json:"user"`
+	Context       Context  `json:"context"`
 }
 
 type BetPayload struct {
