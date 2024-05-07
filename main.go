@@ -71,10 +71,6 @@ func main() {
 	}
 	defer response.Body.Close() // Ensure the response body is closed later
 
-	// Inspect received cookies
-	//	cookies := response.Cookies()
-	//	fmt.Println("Received Cookies:", cookies)
-
 	// Read the response data
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
