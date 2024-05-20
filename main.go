@@ -128,8 +128,11 @@ func main() {
 		fmt.Println("Wagering Bonuses:")
 		fmt.Println("-------------------------------")
 		for _, bonus := range userInfo.WageringBonuses {
+			maxWin, _ := strconv.ParseFloat(bonus.Margin, 64)
+			maxWin *= 3
 			fmt.Println("   - Name:", bonus.Name, " Status:", bonus.Status, " Hash:", bonus.Hash,
-				" Type:", bonus.Type, " Margin: ", bonus.Margin, bonus.Symbol)
+				" Type:", bonus.Type, " Margin:", bonus.Margin, bonus.Symbol,
+				" Max Win:", maxWin, bonus.Symbol)
 			hash = bonus.Hash
 			curr = bonus.Symbol
 			_, bonusBalance = PlaceABetSpec(apiKey, "0.0008", "95", curr, hash, false, true, false)
