@@ -118,11 +118,20 @@ func main() {
 	}
 
 	var curr, balance, choice, hash string
-	var bonusBalance, baseBalance float64
-	faucet, isHigh, bonusM, bonusExist := true, true, false, (len(userInfo.WageringBonuses) != 0)
+	var baseBalance, bonusBalance float64
+	faucet, isHigh, bonusM, bonusExist, tleExist := true, true, false, (len(userInfo.WageringBonuses) != 0), (len(userInfo.TLE) != 0)
 
 	fmt.Println("Username:", userInfo.Username)
 	fmt.Println("-------------------------------")
+
+	if tleExist {
+		fmt.Println("Special events:")
+		fmt.Println("-------------------------------")
+		for _, tle := range userInfo.TLE {
+			fmt.Println("   - Name:", tle.Name, " Status:", tle.Status, " Hash:", tle.Hash)
+		}
+		fmt.Println("-------------------------------")
+	}
 
 	if bonusExist {
 		fmt.Println("Wagering Bonuses:")
