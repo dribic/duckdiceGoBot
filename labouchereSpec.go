@@ -54,6 +54,14 @@ func LabouchereSpec(startBet, startBalance, targetBalance float64, mode, high bo
 			os.Exit(0)
 		}
 
+		// Rebuilding the betting sequence, if the bet gets too big
+		if seqTable[0] >= 3*startBet || seqTable[len(seqTable)-1] >= 10*startBet {
+			fmt.Println("Bets have became too large.")
+			fmt.Println("Constructing new betting sequence...")
+			seqTable = LabSafety(startBet, seqTable)
+			fmt.Println("New betting sequence:", seqTable)
+		}
+
 		// Lowering the currentBet if larger than difference to targetBalance
 		for currentBet > targetBalance-currentBalance && currentBet > startBet {
 			safety = true
