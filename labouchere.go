@@ -19,6 +19,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"os"
 )
 
@@ -49,9 +50,11 @@ func Labouchere(startBet, startBalance, targetBalance float64, fMode, high bool,
 		if len(seqTable) == 1 {
 			bet1 = seqTable[0]
 			currentBet = bet1
+			currentBet = math.Round(currentBet*100000) / 100000
 		} else {
 			bet1, bet2 = seqTable[0], seqTable[len(seqTable)-1]
 			currentBet = bet1 + bet2
+			currentBet = math.Round(currentBet*100000) / 100000
 		}
 
 		// Rebuilding the betting sequence, if the bet gets too big
@@ -67,6 +70,7 @@ func Labouchere(startBet, startBalance, targetBalance float64, fMode, high bool,
 			safety = true
 			fmt.Println("Lowering", currentBet, "by", startBet, "as a precaution.")
 			currentBet -= startBet
+			currentBet = math.Round(currentBet*100000) / 100000
 		}
 
 		if currentBalance < currentBet {
@@ -112,6 +116,7 @@ func Labouchere(startBet, startBalance, targetBalance float64, fMode, high bool,
 			fmt.Println("Failure!☯ ")
 			loses++
 			currentBalance -= currentBet
+			currentBet = math.Round(currentBet*100000) / 100000
 			seqTable = append(seqTable, currentBet)
 		}
 
