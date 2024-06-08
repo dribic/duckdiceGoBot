@@ -1,6 +1,7 @@
 # duckdiceGoBot
 
-duckdiceGoBot is a gambling bot for the website https://duckdice.io written in Go. It is currently limited to implementing the Labouchere betting strategy. 
+duckdiceGoBot is a gambling bot for the website https://duckdice.io written in Go. It is currently limited to implementing the
+Labouchere betting strategy and 1% hunt betting strategy.
 
 ## Screenshots
 
@@ -16,18 +17,19 @@ For planned features look at [ToDo](ToDo.md) list.
 
 - Currently only has CLI.
 - Implements the Labouchere betting strategy for automated gambling on duckdice.io.
+- Implements the 1% hunt betting strategy for automated gambling on duckdice.io.
 - Easy to configure and deploy.
 - Written in Go for performance and reliability.
 
 ## Usage
 
 1. Clone the repository:
-` git clone https://github.com/dribic/duckdiceGoBot.git`
+`git clone https://github.com/dribic/duckdiceGoBot.git`
 2. Save your duckdice API key into either `API` file or `API.txt` file.
 3. Build the bot:
-` go build`
+`go build`
 4. Run the bot.
-` ./duckdiceGoBot` on **Linux** or `duckdiceGoBot.exe` on **Windows**.
+`./duckdiceGoBot` on **Linux** or `duckdiceGoBot.exe` on **Windows**.
 
 ## License
 

@@ -104,7 +104,7 @@ func PlaceABet(apiKey, betValue, chance, currency string, mode, high bool) bool 
 		fmt.Println("CAPTCHA TRIGGERED!😠😠😠")
 		fmt.Printf("Waiting %d seconds", waiter)
 
-		// Implented up to 15 second wait
+		// Implented up to 5 second wait
 		for range waiter {
 			time.Sleep(time.Second)
 			fmt.Print(".")
