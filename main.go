@@ -257,7 +257,7 @@ func main() {
 			} else {
 				temp := baseBalance
 				for i := range progSteps {
-					if i > 0 {
+					if i > 1 {
 						fmt.Println("-------------------------------")
 					}
 					fmt.Printf("%d. step:\n", i+1)
@@ -278,7 +278,7 @@ func main() {
 			} else {
 				temp := baseBalance
 				for i := range progSteps {
-					if i > 0 {
+					if i > 1 {
 						fmt.Println("-------------------------------")
 					}
 					fmt.Printf("%d. step:\n", i+1)
