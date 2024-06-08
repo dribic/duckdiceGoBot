@@ -17,10 +17,15 @@
 
 package main
 
-import "math"
+import (
+	"math"
+	"time"
+)
 
 func LabSafety(startBet float64, inTable []float64) []float64 {
 	var newTable []float64
+
+	time.Sleep(time.Second)
 
 	for idx, element := range inTable {
 		if idx <= len(inTable)-3 {

@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"math"
 	"os"
+	"time"
 )
 
 func LabouchereSpec(startBet, startBalance, targetBalance float64, mode, high bool, apiKey, hash, curr string) float64 {
@@ -63,6 +64,7 @@ func LabouchereSpec(startBet, startBalance, targetBalance float64, mode, high bo
 			fmt.Println("Constructing new betting sequence...")
 			seqTable = LabSafety(startBet, seqTable)
 			fmt.Println("New betting sequence:", seqTable)
+			time.Sleep(time.Second * 3)
 		}
 
 		// Lowering the currentBet if larger than difference to targetBalance
