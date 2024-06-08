@@ -120,6 +120,7 @@ func main() {
 	var curr, balance, choice, hash string
 	var baseBalance, bonusBalance float64
 	faucet, isHigh, bonusM, bonusExist, tleExist := true, true, false, (len(userInfo.WageringBonuses) != 0), (len(userInfo.TLE) != 0)
+	var strategy bool
 
 	fmt.Println("Username:", userInfo.Username)
 	fmt.Println("-------------------------------")
@@ -165,6 +166,19 @@ func main() {
 	}
 	fmt.Println("-------------------------------")
 
+	fmt.Println("Betting strategies:")
+	fmt.Println("-------------------------------")
+	fmt.Println("[L]abouchere")
+	fmt.Println("[O]ne Percent Hunt")
+	fmt.Println("-------------------------------")
+
+	fmt.Print("Which betting strategy would you like to use <labouchere/one percent hunt>: ")
+	fmt.Scan(&choice)
+
+	if choice == "L" || choice == "l" {
+		strategy = true
+	}
+
 	// Clearing curr so that bonus currency is not automatically selected.
 	curr = ""
 
@@ -187,10 +201,12 @@ func main() {
 
 	fmt.Print("Insert base bet value: ")
 	fmt.Scan(&baseBet)
-	fmt.Println("Max win:", baseBet*10, curr)
+	if strategy {
+		fmt.Println("Max win:", baseBet*10, curr)
 
-	fmt.Print("Do you want progressive betting <yes/no>? ")
-	fmt.Scan(&progress)
+		fmt.Print("Do you want progressive betting <yes/no>? ")
+		fmt.Scan(&progress)
+	}
 
 	if progress == "Yes" || progress == "yes" || progress == "Y" || progress == "y" || progress == "YES" {
 		fmt.Print("How many steps do you want? ")
@@ -222,56 +238,63 @@ func main() {
 	}
 	fmt.Printf("Balance is %.6f %s.\n", baseBalance, curr)
 
-	fmt.Print("Insert target balance value: ")
-	fmt.Scan(&targetBal)
-	for targetBal-baseBalance > baseBet*10 {
-		fmt.Println("Target balance too high. Look at max win above!!!")
+	if strategy {
 		fmt.Print("Insert target balance value: ")
 		fmt.Scan(&targetBal)
+		for targetBal-baseBalance > baseBet*10 {
+			fmt.Println("Target balance too high. Look at max win above!!!")
+			fmt.Print("Insert target balance value: ")
+			fmt.Scan(&targetBal)
+		}
+		fmt.Printf("Target balance is %.6f %s.\n", targetBal, curr)
 	}
-	fmt.Printf("Target balance is %.6f %s.\n", targetBal, curr)
 
-	if bonusM {
-		if progSteps == 1 {
-			temp := LabouchereSpec(baseBet, baseBalance, targetBal, faucet, isHigh, apiKey, hash, curr)
-			fmt.Println("Final balance is", temp, curr)
-		} else {
-			temp := baseBalance
-			for i := range progSteps {
-				if i > 0 {
+	if strategy {
+		if bonusM {
+			if progSteps == 1 {
+				temp := LabouchereSpec(baseBet, baseBalance, targetBal, faucet, isHigh, apiKey, hash, curr)
+				fmt.Println("Final balance is", temp, curr)
+			} else {
+				temp := baseBalance
+				for i := range progSteps {
+					if i > 0 {
+						fmt.Println("-------------------------------")
+					}
+					fmt.Printf("%d. step:\n", i+1)
 					fmt.Println("-------------------------------")
+					baseBalance = LabouchereSpec(baseBet, temp, (targetBal + baseBet*10*float64(i)), faucet, isHigh, apiKey, hash, curr)
+					temp = baseBalance
+					fmt.Println("Success!✅")
+					if i == 0 {
+						fmt.Println("-------------------------------")
+					}
 				}
-				fmt.Printf("%d. step:\n", i+1)
-				fmt.Println("-------------------------------")
-				baseBalance = LabouchereSpec(baseBet, temp, (targetBal + baseBet*10*float64(i)), faucet, isHigh, apiKey, hash, curr)
-				temp = baseBalance
-				fmt.Println("Success!✅")
-				if i == 0 {
-					fmt.Println("-------------------------------")
-				}
+				fmt.Println("Final balance is", temp, curr)
 			}
-			fmt.Println("Final balance is", temp, curr)
+		} else {
+			if progSteps == 1 {
+				temp := Labouchere(baseBet, baseBalance, targetBal, faucet, isHigh, apiKey, curr)
+				fmt.Println("Final balance is", temp, curr)
+			} else {
+				temp := baseBalance
+				for i := range progSteps {
+					if i > 0 {
+						fmt.Println("-------------------------------")
+					}
+					fmt.Printf("%d. step:\n", i+1)
+					fmt.Println("-------------------------------")
+					baseBalance = Labouchere(baseBet, temp, (targetBal + baseBet*10*float64(i)), faucet, isHigh, apiKey, curr)
+					temp = baseBalance
+					fmt.Println("Success!✅")
+					if i == 0 {
+						fmt.Println("-------------------------------")
+					}
+				}
+				fmt.Println("Final balance is", temp, curr)
+			}
 		}
 	} else {
-		if progSteps == 1 {
-			temp := Labouchere(baseBet, baseBalance, targetBal, faucet, isHigh, apiKey, curr)
-			fmt.Println("Final balance is", temp, curr)
-		} else {
-			temp := baseBalance
-			for i := range progSteps {
-				if i > 0 {
-					fmt.Println("-------------------------------")
-				}
-				fmt.Printf("%d. step:\n", i+1)
-				fmt.Println("-------------------------------")
-				baseBalance = Labouchere(baseBet, temp, (targetBal + baseBet*10*float64(i)), faucet, isHigh, apiKey, curr)
-				temp = baseBalance
-				fmt.Println("Success!✅")
-				if i == 0 {
-					fmt.Println("-------------------------------")
-				}
-			}
-			fmt.Println("Final balance is", temp, curr)
-		}
+		temp := OnePercentHunt(baseBet, baseBalance, faucet, isHigh, apiKey, curr)
+		fmt.Println("Final balance is", temp, curr)
 	}
 }
