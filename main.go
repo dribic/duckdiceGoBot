@@ -294,7 +294,12 @@ func main() {
 			}
 		}
 	} else {
-		temp := OnePercentHunt(baseBet, baseBalance, faucet, isHigh, apiKey, curr)
-		fmt.Println("Final balance is", temp, curr)
+		if bonusM {
+			temp := OnePercentHuntSpec(baseBet, baseBalance, faucet, isHigh, apiKey, hash, curr)
+			fmt.Println("Final balance is", temp, curr)
+		} else {
+			temp := OnePercentHunt(baseBet, baseBalance, faucet, isHigh, apiKey, curr)
+			fmt.Println("Final balance is", temp, curr)
+		}
 	}
 }

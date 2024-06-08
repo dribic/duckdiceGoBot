@@ -68,3 +68,49 @@ func OnePercentHunt(startBet, startBalance float64, fMode, high bool, apiKey, cu
 
 	return currentBalance
 }
+
+func OnePercentHuntSpec(startBet, startBalance float64, mode, high bool, apiKey, hash, curr string) float64 {
+	var currentBalance float64 = startBalance
+	currentBet, totalLoss := startBet, startBet
+	var choice string
+
+	for range 98 {
+		currentBet *= 1.01
+		totalLoss += currentBet
+	}
+
+	// Resetting currentBet
+	currentBet = startBet
+
+	fmt.Println("If you start betting with", startBet, curr, "you can lose", totalLoss, curr)
+	fmt.Print("Are you sure you want to continue? <yes/no> ")
+	fmt.Scan(&choice)
+	if choice == "No" || choice == "NO" || choice == "n" || choice == "N" || choice == "no" {
+		return currentBalance
+	}
+
+	for i := range 99 {
+		fmt.Printf("%d. bet:\n", i+1)
+		currentBalance -= currentBet
+		fmt.Println("Current bet is", currentBet)
+		fmt.Println("Current balance is", currentBalance)
+
+		// Turn bet into a string, because DDs API uses string
+		amount := fmt.Sprintf("%.6f", currentBet)
+
+		// Making a bet
+		result, _ := PlaceABetSpec(apiKey, amount, "1", curr, hash, mode, high, true)
+
+		if result {
+			currentBalance += currentBet * 97
+			fmt.Println("Success!✅")
+			return currentBalance
+		} else {
+			fmt.Println("Failure!☯")
+		}
+
+		currentBet *= 1.01
+	}
+
+	return currentBalance
+}
