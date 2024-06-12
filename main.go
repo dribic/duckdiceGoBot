@@ -28,6 +28,7 @@ import (
 	"net/http/cookiejar"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	cloudflarebp "github.com/DaRealFreak/cloudflare-bp-go"
@@ -188,15 +189,21 @@ func main() {
 
 	fmt.Print("Which currency would you like to bet in: ")
 	fmt.Scan(&curr)
+	curr = strings.ToUpper(curr)
 	fmt.Println("You chose", curr, "currency.")
 
-	fmt.Print("Which mode would you like to bet in <faucet/main/bonus>: ")
-	fmt.Scan(&choice)
-	if choice == "Main" || choice == "main" || choice == "M" || choice == "m" || choice == "MAIN" {
+	if curr == "DECOY" {
 		faucet = false
-	} else if choice == "Bonus" || choice == "bonus" || choice == "B" || choice == "b" || choice == "BONUS" {
-		faucet = false
-		bonusM = true
+		fmt.Println("Main mode automaticaly chosen for", curr, "betting.")
+	} else {
+		fmt.Print("Which mode would you like to bet in <faucet/main/bonus>: ")
+		fmt.Scan(&choice)
+		if choice == "Main" || choice == "main" || choice == "M" || choice == "m" || choice == "MAIN" {
+			faucet = false
+		} else if choice == "Bonus" || choice == "bonus" || choice == "B" || choice == "b" || choice == "BONUS" {
+			faucet = false
+			bonusM = true
+		}
 	}
 
 	fmt.Print("Insert base bet value: ")

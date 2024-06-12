@@ -49,13 +49,13 @@ func OnePercentHunt(startBet, startBalance float64, fMode, high bool, apiKey, cu
 		amount := fmt.Sprintf("%.6f", currentBet)
 
 		// Making a bet
-		result := PlaceABet(apiKey, amount, "1", curr, fMode, high)
+		result := PlaceABet(apiKey, amount, "0.95", curr, fMode, high)
 
 		if result {
 			if fMode {
-				currentBalance += currentBet * 97
+				currentBalance += currentBet * 102.11
 			} else {
-				currentBalance += currentBet * 99
+				currentBalance += currentBet * 104.21
 			}
 			fmt.Println("Success!✅")
 			return currentBalance
@@ -99,10 +99,10 @@ func OnePercentHuntSpec(startBet, startBalance float64, mode, high bool, apiKey,
 		amount := fmt.Sprintf("%.6f", currentBet)
 
 		// Making a bet
-		result, _ := PlaceABetSpec(apiKey, amount, "1", curr, hash, mode, high, true)
+		result, _ := PlaceABetSpec(apiKey, amount, "0.95", curr, hash, mode, high, true)
 
 		if result {
-			currentBalance += currentBet * 97
+			currentBalance += currentBet * 102.11
 			fmt.Println("Success!✅")
 			return currentBalance
 		} else {
