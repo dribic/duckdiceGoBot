@@ -46,7 +46,7 @@ func OnePercentHunt(startBet, startBalance float64, fMode, high bool, apiKey, cu
 		fmt.Println("Current balance is", currentBalance)
 
 		// Turn bet into a string, because DDs API uses string
-		amount := fmt.Sprintf("%.6f", currentBet)
+		amount := fmt.Sprintf("%.8f", currentBet)
 
 		// Making a bet
 		result := PlaceABet(apiKey, amount, "0.95", curr, fMode, high)
@@ -96,7 +96,7 @@ func OnePercentHuntSpec(startBet, startBalance float64, mode, high bool, apiKey,
 		fmt.Println("Current balance is", currentBalance)
 
 		// Turn bet into a string, because DDs API uses string
-		amount := fmt.Sprintf("%.6f", currentBet)
+		amount := fmt.Sprintf("%.8f", currentBet)
 
 		// Making a bet
 		result, _ := PlaceABetSpec(apiKey, amount, "0.95", curr, hash, mode, high, true)

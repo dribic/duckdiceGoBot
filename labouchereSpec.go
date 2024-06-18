@@ -78,10 +78,10 @@ func LabouchereSpec(startBet, startBalance, targetBalance float64, mode, high bo
 		totalBetAmount += currentBet
 
 		// Print what the next bet is
-		fmt.Printf("Next bet: %.6f (%.6f + %.6f)\n", currentBet, bet1, bet2)
+		fmt.Printf("Next bet: %.8f (%.8f + %.8f)\n", currentBet, bet1, bet2)
 
 		// Turn bet into a string, because DDs API uses string
-		amount := fmt.Sprintf("%.6f", currentBet)
+		amount := fmt.Sprintf("%.8f", currentBet)
 
 		// Making a bet
 		result, _ := PlaceABetSpec(apiKey, amount, "44", curr, hash, mode, high, true)
@@ -118,7 +118,7 @@ func LabouchereSpec(startBet, startBalance, targetBalance float64, mode, high bo
 		}
 
 		// Print progress
-		fmt.Printf("Current balance: %.6f, Victories: %d, Loses: %d, Total gambled amount: %6f\n", currentBalance,
+		fmt.Printf("Current balance: %.8f, Victories: %d, Loses: %d, Total gambled amount: %.8f\n", currentBalance,
 			victories, loses, totalBetAmount)
 		fmt.Println("Betting sequence table:", seqTable)
 	}
