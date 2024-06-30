@@ -90,7 +90,7 @@ func PlaceABet(apiKey, betValue, chance, currency string, mode, high bool) bool 
 
 	// Retrying when captcha triggered
 	for string(body)[2:9] == "DOCTYPE" {
-		waiter := rand.Uint32N(5) + 1
+		waiter := rand.Uint32N(2) + 1
 		req, err = http.NewRequest("POST", url, bytes.NewBuffer(jsonPayload))
 		if err != nil {
 			fmt.Println("Error creating request:", err)
@@ -104,7 +104,7 @@ func PlaceABet(apiKey, betValue, chance, currency string, mode, high bool) bool 
 		fmt.Println("CAPTCHA TRIGGERED!😠😠😠")
 		fmt.Printf("Waiting %d seconds", waiter)
 
-		// Implented up to 5 second wait
+		// Implented up to 3 second wait
 		for range waiter {
 			time.Sleep(time.Second)
 			fmt.Print(".")

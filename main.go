@@ -81,13 +81,13 @@ func main() {
 
 	// Retrying when captcha triggered
 	for string(body)[2:9] == "DOCTYPE" {
-		waiter := rand.Uint32N(5) + 1
+		waiter := rand.Uint32N(2) + 1
 
 		client.Transport = cloudflarebp.AddCloudFlareByPass(client.Transport)
 		fmt.Println("CAPTCHA TRIGGERED!😠😠😠")
 		fmt.Printf("Waiting %d seconds", waiter)
 
-		// Implented up to 5 second wait
+		// Implented up to 3 second wait
 		for range waiter {
 			time.Sleep(time.Second)
 			fmt.Print(".")

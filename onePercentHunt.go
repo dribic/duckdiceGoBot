@@ -41,6 +41,10 @@ func OnePercentHunt(startBet, startBalance float64, fMode, high bool, apiKey, cu
 
 	for i := range 99 {
 		fmt.Printf("%d. bet:\n", i+1)
+		if currentBet > currentBalance {
+			fmt.Println("Balance is too low!")
+			break
+		}
 		currentBalance -= currentBet
 		fmt.Println("Current bet is", currentBet)
 		fmt.Println("Current balance is", currentBalance)
@@ -91,6 +95,10 @@ func OnePercentHuntSpec(startBet, startBalance float64, mode, high bool, apiKey,
 
 	for i := range 99 {
 		fmt.Printf("%d. bet:\n", i+1)
+		if currentBet > currentBalance {
+			fmt.Println("Balance is too low!")
+			break
+		}
 		currentBalance -= currentBet
 		fmt.Println("Current bet is", currentBet)
 		fmt.Println("Current balance is", currentBalance)
