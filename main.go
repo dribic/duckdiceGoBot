@@ -197,8 +197,6 @@ func main() {
 		curr = ""
 
 		var baseBet, targetBal, limitLoss float64
-		var progSteps uint8 = 1
-		var progress string = "no"
 
 		fmt.Print("Which currency would you like to bet in: ")
 		fmt.Scan(&curr)
@@ -223,14 +221,6 @@ func main() {
 		fmt.Scan(&baseBet)
 		if strategy == "labouchere" {
 			fmt.Println("Max win:", baseBet*10, curr)
-
-			fmt.Print("Do you want progressive betting <yes/no>? ")
-			fmt.Scan(&progress)
-		}
-
-		if progress == "Yes" || progress == "yes" || progress == "Y" || progress == "y" || progress == "YES" {
-			fmt.Print("How many steps do you want? ")
-			fmt.Scan(&progSteps)
 		}
 
 		fmt.Print("Would you like to bet <high/low>: ")
@@ -286,47 +276,11 @@ func main() {
 
 		if strategy == "labouchere" {
 			if bonusM {
-				if progSteps == 1 {
-					temp := LabouchereSpec(baseBet, baseBalance, targetBal, faucet, isHigh, apiKey, hash, curr)
-					fmt.Println("Final balance is", temp, curr)
-				} else {
-					temp := baseBalance
-					for i := range progSteps {
-						if i > 1 {
-							fmt.Println("-------------------------------")
-						}
-						fmt.Printf("%d. step:\n", i+1)
-						fmt.Println("-------------------------------")
-						baseBalance = LabouchereSpec(baseBet, temp, (targetBal + baseBet*10*float64(i)), faucet, isHigh, apiKey, hash, curr)
-						temp = baseBalance
-						fmt.Println("Success!✅")
-						if i == 0 {
-							fmt.Println("-------------------------------")
-						}
-					}
-					fmt.Println("Final balance is", temp, curr)
-				}
+				temp := LabouchereSpec(baseBet, baseBalance, targetBal, faucet, isHigh, apiKey, hash, curr)
+				fmt.Println("Final balance is", temp, curr)
 			} else {
-				if progSteps == 1 {
-					temp := Labouchere(baseBet, baseBalance, targetBal, faucet, isHigh, apiKey, curr)
-					fmt.Println("Final balance is", temp, curr)
-				} else {
-					temp := baseBalance
-					for i := range progSteps {
-						if i > 1 {
-							fmt.Println("-------------------------------")
-						}
-						fmt.Printf("%d. step:\n", i+1)
-						fmt.Println("-------------------------------")
-						baseBalance = Labouchere(baseBet, temp, (targetBal + baseBet*10*float64(i)), faucet, isHigh, apiKey, curr)
-						temp = baseBalance
-						fmt.Println("Success!✅")
-						if i == 0 {
-							fmt.Println("-------------------------------")
-						}
-					}
-					fmt.Println("Final balance is", temp, curr)
-				}
+				temp := Labouchere(baseBet, baseBalance, targetBal, faucet, isHigh, apiKey, curr)
+				fmt.Println("Final balance is", temp, curr)
 			}
 		} else if strategy == "onePercent" {
 			if bonusM {
