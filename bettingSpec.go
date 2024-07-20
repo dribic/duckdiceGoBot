@@ -95,7 +95,7 @@ func PlaceABetSpec(apiKey, betValue, chance, currency, hash string, mode, high, 
 
 	// Retrying when captcha triggered
 	for string(body)[2:9] == "DOCTYPE" {
-		waiter := rand.Uint32N(2) + 1
+		waiter := rand.Uint32N(3) + 1
 		req, err = http.NewRequest("POST", url, bytes.NewBuffer(jsonPayload))
 		if err != nil {
 			fmt.Println("Error creating request:", err)

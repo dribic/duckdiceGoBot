@@ -1,6 +1,6 @@
 module duckdiceGoBot
 
-go 1.22.2
+go 1.22.5
 
 require (
 	github.com/DaRealFreak/cloudflare-bp-go v1.0.4 // indirect

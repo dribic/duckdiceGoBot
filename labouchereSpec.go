@@ -34,7 +34,7 @@ func LabouchereSpec(startBet, startBalance, targetBalance float64, mode, high bo
 	// Initialise other variables
 	currentBalance := startBalance
 	var totalBetAmount float64
-	var multiplier float64 = 1.2045
+	const multiplier float64 = 1.2045
 	var victories, loses uint16
 	safety := false
 

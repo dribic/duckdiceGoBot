@@ -16,6 +16,7 @@ For planned features look at [ToDo](ToDo.md) list.
 ## Features
 
 - Currently only has CLI.
+- Implements the Fibonacci betting strategy for automated gambling on duckdice.io.
 - Implements the Labouchere betting strategy for automated gambling on duckdice.io.
 - Implements the 1% hunt betting strategy for automated gambling on duckdice.io.
 - Easy to configure and deploy.
