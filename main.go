@@ -119,9 +119,10 @@ func main() {
 			log.Fatal(err)
 		}
 
-		var curr, balance, choice, hash string
+		var curr, balance, choice, bonusHash, tleHash string
 		var baseBalance, bonusBalance float64
 		faucet, isHigh, bonusM, bonusExist, tleExist := true, true, false, (len(userInfo.WageringBonuses) != 0), (len(userInfo.TLE) != 0)
+		var tleM bool
 		var strategy string
 
 		fmt.Println("Username:", userInfo.Username)
@@ -132,6 +133,7 @@ func main() {
 			fmt.Println("-------------------------------")
 			for _, tle := range userInfo.TLE {
 				fmt.Println("   - Name:", tle.Name, " Status:", tle.Status, " Hash:", tle.Hash)
+				tleHash = tle.Hash
 			}
 			fmt.Println("-------------------------------")
 		}
@@ -145,9 +147,9 @@ func main() {
 				fmt.Println("   - Name:", bonus.Name, " Status:", bonus.Status, " Hash:", bonus.Hash,
 					" Type:", bonus.Type, " Margin:", bonus.Margin, bonus.Symbol,
 					" Max Win:", maxWin, bonus.Symbol)
-				hash = bonus.Hash
+				bonusHash = bonus.Hash
 				curr = bonus.Symbol
-				_, bonusBalance = PlaceABetSpec(apiKey, "0.0008", "95", curr, hash, false, true, false)
+				_, bonusBalance = PlaceABetSpec(apiKey, "0.0008", "95", curr, bonusHash, false, true, false)
 			}
 			fmt.Println("-------------------------------")
 		}
@@ -207,14 +209,25 @@ func main() {
 			faucet = false
 			fmt.Println("Main mode automaticaly chosen for", curr, "betting.")
 		} else {
-			fmt.Print("Which mode would you like to bet in <faucet/main/bonus>: ")
+			fmt.Print("Which mode would you like to bet in <faucet/main/bonus/tle>: ")
 			fmt.Scan(&choice)
 			if choice == "Main" || choice == "main" || choice == "M" || choice == "m" || choice == "MAIN" {
 				faucet = false
+				fmt.Println("You chose MAIN mode.")
 			} else if choice == "Bonus" || choice == "bonus" || choice == "B" || choice == "b" || choice == "BONUS" {
 				faucet = false
 				bonusM = true
+				fmt.Println("You chose BONUS mode.")
+			} else if choice == "TLE" || choice == "Tle" || choice == "t" || choice == "T" || choice == "tle" {
+				faucet = false
+				tleM = true
+				fmt.Println("You chose TLE mode.")
 			}
+
+		}
+
+		if faucet {
+			fmt.Println("You chose FAUCET mode.")
 		}
 
 		fmt.Print("Insert base bet value: ")
@@ -276,7 +289,10 @@ func main() {
 
 		if strategy == "labouchere" {
 			if bonusM {
-				temp := LabouchereSpec(baseBet, baseBalance, targetBal, faucet, isHigh, apiKey, hash, curr)
+				temp := LabouchereSpec(baseBet, baseBalance, targetBal, faucet, isHigh, apiKey, bonusHash, curr)
+				fmt.Println("Final balance is", temp, curr)
+			} else if tleM {
+				temp := LabouchereSpec(baseBet, baseBalance, targetBal, tleM, isHigh, apiKey, tleHash, curr)
 				fmt.Println("Final balance is", temp, curr)
 			} else {
 				temp := Labouchere(baseBet, baseBalance, targetBal, faucet, isHigh, apiKey, curr)
@@ -284,7 +300,10 @@ func main() {
 			}
 		} else if strategy == "onePercent" {
 			if bonusM {
-				temp := OnePercentHuntSpec(baseBet, baseBalance, faucet, isHigh, apiKey, hash, curr)
+				temp := OnePercentHuntSpec(baseBet, baseBalance, faucet, isHigh, apiKey, bonusHash, curr)
+				fmt.Println("Final balance is", temp, curr)
+			} else if tleM {
+				temp := OnePercentHuntSpec(baseBet, baseBalance, tleM, isHigh, apiKey, tleHash, curr)
 				fmt.Println("Final balance is", temp, curr)
 			} else {
 				temp := OnePercentHunt(baseBet, baseBalance, faucet, isHigh, apiKey, curr)
@@ -292,7 +311,10 @@ func main() {
 			}
 		} else if strategy == "fibonacci" {
 			if bonusM {
-				temp := FibBettingSpec(baseBet, baseBalance, targetBal, limitLoss, faucet, isHigh, apiKey, hash, curr)
+				temp := FibBettingSpec(baseBet, baseBalance, targetBal, limitLoss, faucet, isHigh, apiKey, bonusHash, curr)
+				fmt.Println("Final balance is", temp, curr)
+			} else if tleM {
+				temp := FibBettingSpec(baseBet, baseBalance, targetBal, limitLoss, tleM, isHigh, apiKey, tleHash, curr)
 				fmt.Println("Final balance is", temp, curr)
 			} else {
 				temp := FibBetting(baseBet, baseBalance, targetBal, limitLoss, faucet, isHigh, apiKey, curr)

@@ -40,13 +40,24 @@ func PlaceABetSpec(apiKey, betValue, chance, currency, hash string, mode, high, 
 
 	// Create a bet
 	var bet BetPayload
-	bet = BetPayload{
-		Symbol:                currency,
-		Chance:                chance,
-		IsHigh:                high,
-		Amount:                betValue,
-		Faucet:                false,
-		UserWageringBonusHash: hash,
+	if mode {
+		bet = BetPayload{
+			Symbol:  currency,
+			Chance:  chance,
+			IsHigh:  high,
+			Amount:  betValue,
+			Faucet:  false,
+			TLEHash: hash,
+		}
+	} else {
+		bet = BetPayload{
+			Symbol:                currency,
+			Chance:                chance,
+			IsHigh:                high,
+			Amount:                betValue,
+			Faucet:                false,
+			UserWageringBonusHash: hash,
+		}
 	}
 
 	// Create a CookieJar to store cookies
