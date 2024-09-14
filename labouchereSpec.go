@@ -65,6 +65,9 @@ func LabouchereSpec(startBet, startBalance, targetBalance float64, mode, high bo
 			seqTable = LabSafety(startBet, seqTable)
 			fmt.Println("New betting sequence:", seqTable)
 			time.Sleep(time.Second * 3)
+			bet1, bet2 = seqTable[0], seqTable[len(seqTable)-1]
+			currentBet = bet1 + bet2
+			currentBet = math.Round(currentBet*100000) / 100000
 		}
 
 		// Lowering the currentBet if larger than difference to targetBalance
